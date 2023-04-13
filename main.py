@@ -1,3 +1,4 @@
+from email.policy import default
 import tkinter as tk
 from tkinter import filedialog
 import cv2
@@ -68,11 +69,15 @@ def generate_text():
         # Convert byte arrays to hexadecimal format
         hex_byte_arrays = ['0x' + format(byte, '02x') for byte in byte_arrays]
 
-        # Convert hex byte arrays to C++ array format
         cpp_array = ', '.join(hex_byte_arrays)
+        # Insert newline after every 10 hexadecimal numbers
+        cpp_array = [cpp_array[i:i+2] for i in range(0, len(cpp_array), 2)]  # Split into pairs of hexadecimal numbers
+        cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
+        cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
 
         # Generate C++ array
-        cpp_array = 'unsigned char my_array[] = {' + cpp_array + '};'
+        cpp_array = 'unsigned char my_array[] = {\n' + cpp_array + '\n};'
+
         output_text.delete(1.0, tk.END)
         output_text.insert(tk.END, cpp_array)
     
@@ -89,7 +94,7 @@ def copy_all():
 
     root.clipboard_clear()
     root.clipboard_append(output_text.get(1.0, tk.END))
-    copied_all_label.configure(text="Copied All")
+    copied_all_label.configure(text="✓ Copied All")
 
 customtkinter.set_appearance_mode("System")  
 customtkinter.set_default_color_theme("blue")  
@@ -99,35 +104,35 @@ root = customtkinter.CTk()
 root.title("Image Converter v1.0")
 
 # Set window size
-root.geometry("400x450") # Set width and height as desired
+root.geometry("320x450") 
 
 # Label for "Open File" button
 open_file_label =  customtkinter.CTkLabel(root, text="Select a file:")
-open_file_label.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
+open_file_label.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
 
 # "Open File" button
 open_file_button = customtkinter.CTkButton(root, text="Open File", command=open_file)
-open_file_button.grid(row=0, column=1, pady=5, columnspan=1, sticky=tk.W)
+open_file_button.grid(row=0, column=1, padx=10, pady=5, columnspan=1, sticky="nsew")
 
 # "Generate" button
 generate_button = customtkinter.CTkButton(root, text="Generate", command=generate_text)
-generate_button.grid(row=2, column=0, padx=10, pady=5, columnspan=1, sticky=tk.W)
+generate_button.grid(row=2, column=0, padx=10, pady=5, columnspan=1, sticky="nsew")
 
 # "Copy All" button
 copy_all_button = customtkinter.CTkButton(root, text="Copy All", command=copy_all)
-copy_all_button.grid(row=2, column=1, pady=5, columnspan=1, sticky=tk.W)  # Positioning the button on the right with fixed column value
+copy_all_button.grid(row=2, column=1, pady=5, padx=10, columnspan=1, sticky="nsew")  
 
-# Label for displaying selected file path
-file_label =  customtkinter.CTkLabel(root, text="No file selected")
-file_label.grid(row=5, column=0, padx=10, pady=5, columnspan=3, sticky=tk.W)
-
-# Output text form
-output_text = tk.Text(root, height = 25, width = 72)
-output_text.grid(row=3, column=0, columnspan=3, padx=10, pady=5, sticky=tk.W)
+# Output text for
+output_text = customtkinter.CTkTextbox(root, height = 280, width = 300 )   # 25 50
+output_text.grid(row=3, column=0, columnspan=3, padx=10, pady=5, sticky="nsew")
 
 # Label for displaying "Copied All" text
 copied_all_label =  customtkinter.CTkLabel(root, text="")
-copied_all_label.grid(row=4, column=0, padx=150, columnspan=3, sticky=tk.W)
+copied_all_label.grid(row=4, column=0, padx=120, columnspan=3, sticky="nsew")
+
+# Label for displaying selected file path
+file_label =  customtkinter.CTkLabel(root, text="No file selected")
+file_label.grid(row=5, column=0, padx=10, pady=5, columnspan=3, sticky="nsew")
 
 root.mainloop()
 
