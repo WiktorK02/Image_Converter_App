@@ -4,6 +4,9 @@ import cv2
 import numpy as np
 import customtkinter 
 
+# To check extenxion
+import imghdr
+
 file_path = ''
 
 def open_file():
@@ -17,22 +20,44 @@ def open_file():
 
 def generate_text():
     global file_path
+
     if not file_path:
         output_text.delete(1.0, tk.END)
         output_text.insert(tk.END, "No file selected")
         return
+
     try:
-        # Load PNG image with alpha channel
-        image = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+        # To check extenxion
+        extension = imghdr.what(file_path)
 
-        # Resize image to 128x64
-        image = cv2.resize(image, (128, 64))
+        if extension == "png":
+            # Load PNG image with alpha channel
+            image = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
 
-        # Get the alpha channel from the image
-        alpha_channel = image[:, :, 3]
+            # Resize image to 128x64
+            image = cv2.resize(image, (128, 64))
 
-        # Convert alpha values to 0 or 1 (0 if transparency == 0, 1 if not)
-        binary_alpha = np.where(alpha_channel == 0, 0, 1)
+            # Get the alpha channel from the image
+            alpha_channel = image[:, :, 3]
+
+            # Convert alpha values to 0 or 1 (0 if transparency == 0, 1 if not)
+            binary_alpha = np.where(alpha_channel == 0, 0, 1)
+
+        elif extension == "jpeg":
+            # Load JPEG image
+            image = cv2.imread(file_path, cv2.IMREAD_COLOR)
+
+            # Resize image to 128x64
+            image = cv2.resize(image, (128, 64))
+
+            # Convert RGB image to grayscale
+            grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+            # Compute threshold value to convert grayscale to binary
+            _, threshold_value = cv2.threshold(grayscale_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+            # Convert grayscale image to binary alpha values
+            binary_alpha = np.where(grayscale_image <= threshold_value, 0, 1)
 
         # Reshape the binary alpha values into 1D array
         binary_alpha = binary_alpha.ravel()
@@ -46,10 +71,12 @@ def generate_text():
         # Convert hex byte arrays to C++ array format
         cpp_array = ', '.join(hex_byte_arrays)
 
-        # Generate C++ array declaration and initialization
+        # Generate C++ array
         cpp_array = 'unsigned char my_array[] = {' + cpp_array + '};'
         output_text.delete(1.0, tk.END)
         output_text.insert(tk.END, cpp_array)
+    
+    # In case of error or invalid extension 
     except:
         output_text.delete(1.0, tk.END)
         output_text.insert(tk.END, "Error generating text")
@@ -64,41 +91,43 @@ def copy_all():
     root.clipboard_append(output_text.get(1.0, tk.END))
     copied_all_label.configure(text="Copied All")
 
-customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
-customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-# Create tkinter window
-root = customtkinter.CTk()  # create CTk window like you do with the Tk window
-root.title("Image Converter")
+customtkinter.set_appearance_mode("System")  
+customtkinter.set_default_color_theme("blue")  
+
+# Create customtkinter window
+root = customtkinter.CTk() 
+root.title("Image Converter v1.0")
 
 # Set window size
 root.geometry("400x450") # Set width and height as desired
 
-# Create label for "Open File" button
+# Label for "Open File" button
 open_file_label =  customtkinter.CTkLabel(root, text="Select a file:")
 open_file_label.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
 
-# Create "Open File" button
+# "Open File" button
 open_file_button = customtkinter.CTkButton(root, text="Open File", command=open_file)
 open_file_button.grid(row=0, column=1, pady=5, columnspan=1, sticky=tk.W)
 
-# Create "Generate" button
+# "Generate" button
 generate_button = customtkinter.CTkButton(root, text="Generate", command=generate_text)
 generate_button.grid(row=2, column=0, padx=10, pady=5, columnspan=1, sticky=tk.W)
 
-# Create "Copy All" button
+# "Copy All" button
 copy_all_button = customtkinter.CTkButton(root, text="Copy All", command=copy_all)
-copy_all_button.grid(row=2, column=1, pady=5, columnspan=1, sticky=tk.W) 
+copy_all_button.grid(row=2, column=1, pady=5, columnspan=1, sticky=tk.W)  # Positioning the button on the right with fixed column value
 
-# Create label for displaying selected file path
+# Label for displaying selected file path
 file_label =  customtkinter.CTkLabel(root, text="No file selected")
 file_label.grid(row=5, column=0, padx=10, pady=5, columnspan=3, sticky=tk.W)
 
-# Create output text form
+# Output text form
 output_text = tk.Text(root, height = 25, width = 72)
 output_text.grid(row=3, column=0, columnspan=3, padx=10, pady=5, sticky=tk.W)
 
-# Create label for displaying "Copied All" text
+# Label for displaying "Copied All" text
 copied_all_label =  customtkinter.CTkLabel(root, text="")
 copied_all_label.grid(row=4, column=0, padx=150, columnspan=3, sticky=tk.W)
 
 root.mainloop()
+
