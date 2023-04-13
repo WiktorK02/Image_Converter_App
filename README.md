@@ -11,6 +11,7 @@ While you open .png and .jpg(others extensions in the future) file The algorithm
 - [ ] make icon of the app <br>
 - [ ] show preview of an image <br>
 - [ ] make app as .exe <br>
+- [ ] resize file text font <br>
 ## What I have learned
 •	tkinter library skills <br>
 •	basics of UX and GUI<br>
