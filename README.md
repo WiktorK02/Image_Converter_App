@@ -1,6 +1,6 @@
 # Image Converter GUI APP for oled display ssd1306 128x64
 ## How does it work
-While you open .png (.jpg and others extensions in the future) file The algorithm return optimazed hex array with full code ready to copy and put into the Arduino IDE <br>
+While you open .png and .jpg(others extensions in the future) file The algorithm return optimazed hex array with full code ready to copy and put into the Arduino IDE <br>
 ## Screenshots
 <pre><img src="https://user-images.githubusercontent.com/123249470/231492432-e25cd798-88af-4d42-a5a9-3784da06fda7.gif" width="300" height="400" /> </pre> 
 ## Task list
