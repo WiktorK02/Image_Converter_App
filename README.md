@@ -3,7 +3,7 @@
 While you open .png and .jpg(others extensions in the future) file The algorithm return optimazed hex array with full code ready to copy and put into the Arduino IDE <br>
 ## Screenshots
 
-<img src="https://user-images.githubusercontent.com/123249470/232077136-51249a30-45eb-4e6f-8b22-6d2739350bd4.gif" width="300" height="400">
+<img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="280" height="440">
 
 ## Task list
 - [x] upgrade graphics and style<br>
