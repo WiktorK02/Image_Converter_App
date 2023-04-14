@@ -12,6 +12,7 @@ While you open .png and .jpg(others extensions in the future) file The algorithm
 - [x] show preview of an image <br>
 - [ ] make app as .exe <br>
 - [ ] resize file text font <br>
+- [ ] reverse color of image <br>
 ## What I have learned
 •	tkinter library skills <br>
 •	basics of UX and GUI<br>
