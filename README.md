@@ -7,13 +7,13 @@ While you open .png and .jpg(others extensions in the future) file The algorithm
 
 ## Task list
 - [x] upgrade graphics and style<br>
-- [ ] split into files and organize code<br>
 - [x] add more functions <br>
 - [ ] add more than one display size <br>
 - [ ] make icon of the app <br>
 - [x] show preview of an image <br>
 - [ ] make app as .exe <br>
 - [x] reverse color of image <br>
+- [] create function which generate full arduino code(not only arduino array) and connect it to switch button<br>
 ## What I have learned
 •	tkinter library skills <br>
 •	basics of UX and GUI<br>
