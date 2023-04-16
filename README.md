@@ -13,7 +13,7 @@ While you open .png and .jpg(others extensions in the future) file The algorithm
 - [x] show preview of an image <br>
 - [ ] make app as .exe <br>
 - [x] reverse color of image <br>
-- [] create function which generate full arduino code(not only arduino array) and connect it to switch button<br>
+- [ ] create function which generate full arduino code(not only arduino array) and connect it to switch button<br>
 ## What I have learned
 •	tkinter library skills <br>
 •	basics of UX and GUI<br>
