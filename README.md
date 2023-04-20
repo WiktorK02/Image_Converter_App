@@ -20,7 +20,7 @@ IMPORTANT: If you have Arduino board with inputs SCK and SDA, use them instead o
 1. Fork the Project
 2. Clone repo with your GitHub username instead of ```YOUR-USERNAME```:<br>
 ```
-$ git clone https://github.com/YOUR-USERNAME/Spoon-Knife 
+$ git clone https://github.com/YOUR-USERNAME/Image_Converter_App 
 ```
 3. Create new branch:<br>
 ```
