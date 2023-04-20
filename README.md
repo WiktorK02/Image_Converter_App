@@ -2,16 +2,17 @@
 ## About Project
 <table border="0">
  <tr>
-    <td><b style="font-size:50px">About Project</b></td>
-    <td><b style="font-size:50px"> Screenshots</b></td>
+    <td></td>
+    <td><b style="font-size:80px"> Screenshots</b></td>
  </tr>
  <tr>
     <td>
-    Application has been created in order to easy convert image into your ***Arduino*** project with ***oled displays***
-    How does it work While you open .png and .jpg (others extensions in the future) image in app, the algorithm convert it to hexdeicmal array. Then it             returns full code, ready to copy and put into the Arduino IDE. You can also preview how image will you like on your dislplay<br>
+    Application has been created in order to easy convert image into your <strong>Arduino</strong> project with <strong>oled displays</strong>
+    <strong><br><br>How does it work:</strong><br> 
+    While you open .png and .jpg (others extensions in the future) image in app, the algorithm convert it to hexdeicmal array. Then it             returns full     code, ready to copy and put into the Arduino IDE. You can also preview how image will you like on your dislplay
     </td>
     <td>
-      <img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="420" height="350">
+      <img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="340" height="500">
 </p></td>
  </tr>
 </table>
@@ -37,14 +38,14 @@ git checkout BRANCH-NAME
 5. Submit Pull Request with comprehensive description of change
 
 ## Task list
-* upgrade graphics and style
-* add more functions 
-- add more than one display size
-- make icon of the app
-* show preview of an image 
-- make app as .exe
-* reverse color of image
-- create function which generate full arduino code(not only arduino array) and connect it to switch button
+● upgrade graphics and style<br>
+● add more functions<br>
+⚬ add more than one display size<br>
+⚬ make icon of the app<br>
+● show preview of an image <br>
+⚬ make app as .exe<br>
+● reverse color of image<br>
+⚬ create function which generate full arduino code(not only arduino array) and connect it to switch button
 ## What I have learned
 *	tkinter library skills 
 *	basics of UX and GUI
