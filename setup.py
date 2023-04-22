@@ -4,7 +4,7 @@ REQUIREMENTS = [i.strip() for i in open("/home/wiktor/Image_Converter_App/requir
 LONG_DESCRIPTION = 'About Image converter GUI App to arduino oled display ssd1306 128x64'
 setup(
    name='image_to_arduino',
-   version='1.0.1',
+   version='1.0.3',
    description='Image converter to arduino',
    license="MIT",
    author='WiktorK02',
