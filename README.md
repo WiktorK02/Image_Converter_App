@@ -1,4 +1,4 @@
-# Image Converter GUI APP for Arduino led display ssd1306 128x64
+# Image Converter GUI APP for Arduino oled display ssd1306 128x64
 ## About Project
 Application has been created in order to easy convert image into your <strong>Arduino</strong> project with <strong>oled displays</strong>
 ### How does it work:
@@ -8,17 +8,38 @@ While you open .png and .jpg (others extensions in the future) image in app, the
 <img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="350" height="560">
 </p>
 
-## How to install 
+## How to install
+#### First of all download python and pip and check version
+```
+pip3 --version 
+python --version
+```
+
+### Windows:
+Type into CMD:
+```
+pip3 install image-to-arduino
+```
+```
+pip3 install tk
+```
 ### Linux: 
 ```
-$ pip install image-to-arduino
+$ pip3 install image-to-arduino
 ```
 ```
 $ sudo apt-get install python3-tk
 ```
+### Mac OS:
+```
+~ % pip3 install image-to-arduino
+```
+```
+~ % pip3 install tk 
+```
 ## How to run
 ```
-$ pip show image-to-arduino
+$ pip3 show image-to-arduino
 ```
 copy location path and add ```/src``` to the end
 ```
@@ -26,15 +47,21 @@ $ cd <copyied path/src>
 ```
 ### For example:
 ```
-$ pip show image-to-arduino
+$ pip3 show image-to-arduino
 Location: /home/usr/Image_Converter_App
 $ cd /home/usr/Image_Converter_App/src
 ```
-### Mark the file as an executable:
+### Windows:
+#### Run the script:
+```
+python image_to_arduino.py
+```
+### Linux/Mac OS:
+#### Mark the file as an executable:
 ```
 $ chmod +x image_to_arduino.py 
 ```
-### Run the script:
+#### Run the script:
 ```
 $ python3 image_to_arduino.py 
 ```
@@ -79,6 +106,6 @@ $ git checkout BRANCH-NAME
 * openCV
 * numpy
 ## Version
-Version 1.0.3
+Version 1.0.3.1
 ## License 
 [MIT license](LICENSE)
