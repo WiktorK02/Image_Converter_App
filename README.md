@@ -1,6 +1,6 @@
 # Image Converter GUI APP for Arduino oled display ssd1306 128x64
 ## About Project
-Application has been created in order to easy convert image into your <strong>Arduino</strong> project with <strong>oled displays</strong>
+Application has been created in order to easy convert images into your <strong>Arduino</strong> project with <strong>oled displays</strong>
 ### How does it work:
 While you open .png and .jpg (others extensions in the future) image in app, the algorithm convert it to hexdeicmal array. Then it             returns full     code, ready to copy and put into the Arduino IDE. You can also preview how image will you like on your dislplay
 ## Demo
@@ -9,7 +9,7 @@ While you open .png and .jpg (others extensions in the future) image in app, the
 </p>
 
 ## How to install
-#### First of all download python and pip and check version
+#### First of all download python, pip and check version
 ```
 pip3 --version 
 python --version
@@ -41,9 +41,9 @@ $ sudo apt-get install python3-tk
 ```
 $ pip3 show image-to-arduino
 ```
-copy location path and add ```/src``` to the end
+copy location path and add ```/src``` at the end
 ```
-$ cd <copyied path/src>
+$ cd <copyied path>/src
 ```
 ### For example:
 ```
@@ -54,16 +54,21 @@ $ cd /home/usr/Image_Converter_App/src
 ### Windows:
 #### Run the script:
 ```
-python image_to_arduino.py
+python image-to-arduino.py
 ```
 ### Linux/Mac OS:
 #### Mark the file as an executable:
 ```
-$ chmod +x image_to_arduino.py 
+$ chmod +x image-to-arduino.py 
 ```
 #### Run the script:
 ```
-$ python3 image_to_arduino.py 
+$ python3 image-to-arduino.py 
+```
+## How to upgrade version
+### Windows/Linux/Mac OS:
+```
+$ pip3 install --upgrade image-to-arduino
 ```
 ## How to connect display to Arduino
 
@@ -71,7 +76,7 @@ $ python3 image_to_arduino.py
       <img src="https://user-images.githubusercontent.com/123249470/233432819-97b593ab-d380-4945-85ab-543dbb49921b.png" width="620" height="480">
 </p>
 
-IMPORTANT: If you have Arduino board with inputs SCK and SDA, use them instead of A4 and A5 inputs
+<strong>IMPORTANT:</strong> If you have Arduino board with inputs SCK and SDA, use them instead of A4 and A5 inputs
 
 ## How to Contribute
 1. Fork the Project
@@ -95,7 +100,7 @@ $ git checkout BRANCH-NAME
 * <del> show preview of an image </del> <br>
 * make app as .exe <br>
 * <del> reverse color of image </del><br>
-* create function which generate full arduino code(not only arduino array) and connect it to switch button
+* <del> create function which generate full arduino code(not only arduino array) and connect it to switch button</del>
 ## What I have learned
 *	tkinter library skills 
 *	basics of UX and GUI
@@ -106,6 +111,6 @@ $ git checkout BRANCH-NAME
 * openCV
 * numpy
 ## Version
-Version 1.0.3.1
+Version 1.0.3.2
 ## License 
 [MIT license](LICENSE)
