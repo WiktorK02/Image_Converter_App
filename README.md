@@ -8,7 +8,21 @@ While you open .png and .jpg (others extensions in the future) image in app, the
 <img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="350" height="560">
 </p>
 
-## How to install 
+## How to install
+#### First of all download python and pip and check version
+```
+pip3 --version 
+python --version
+```
+
+### Windows:
+Type into CMD:
+```
+pip3 install image-to-arduino
+```
+```
+pip3 install tk
+```
 ### Linux: 
 ```
 $ pip3 install image-to-arduino
@@ -17,15 +31,11 @@ $ pip3 install image-to-arduino
 $ sudo apt-get install python3-tk
 ```
 ### Mac OS:
-#### Install brew:
 ```
-~ % /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-(it may take a while)
-
-~ % brew update
-~ % brew install python@3.9
-~ % brew install tcl-tk
+~ % pip3 install image-to-arduino
+```
+```
+~ % pip3 install tk 
 ```
 ## How to run
 ```
@@ -41,11 +51,17 @@ $ pip3 show image-to-arduino
 Location: /home/usr/Image_Converter_App
 $ cd /home/usr/Image_Converter_App/src
 ```
-### Mark the file as an executable:
+### Windows:
+#### Run the script:
+```
+python image_to_arduino.py
+```
+### Linux/Mac OS:
+#### Mark the file as an executable:
 ```
 $ chmod +x image_to_arduino.py 
 ```
-### Run the script:
+#### Run the script:
 ```
 $ python3 image_to_arduino.py 
 ```
