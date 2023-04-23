@@ -1,4 +1,4 @@
-# Image Converter GUI APP for Arduino led display ssd1306 128x64
+# Image Converter GUI APP for Arduino oled display ssd1306 128x64
 ## About Project
 Application has been created in order to easy convert image into your <strong>Arduino</strong> project with <strong>oled displays</strong>
 ### How does it work:
