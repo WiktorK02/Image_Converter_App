@@ -112,14 +112,14 @@ def clear_all():
     image_preview_label.config(image="")
 
 customtkinter.set_appearance_mode("System")  
-customtkinter.set_default_color_theme("dark-blue")  
+customtkinter.set_default_color_theme("blue")  
 
 # Create customtkinter window
 root = customtkinter.CTk() 
-root.title("Image Converter v1.0")
+root.title("Image to arduino")
 
 # Set window size
-root.geometry("320x530") # Set width and height as desired
+root.geometry("330x550") # Set width and height as desired
 
 # Label for displaying selected file path
 file_label =  customtkinter.CTkLabel(root, text="No file selected")
@@ -150,15 +150,15 @@ preview_text_label = customtkinter.CTkLabel(root, text="Preview")
 preview_text_label.grid(row=5, column=0, pady=5, padx=10)
 
 # Label to display the image
-image_preview_label = tk.Label(root, bg='#1c1c1c')
+image_preview_label = tk.Label(root)
 image_preview_label.grid(row=6, column=0, columnspan=1, padx=10)
 
 # Switch label
 switch = customtkinter.CTkSwitch(root, text="Reverse colors", command=toggle_switch)
 switch.grid(row=1, column=0, padx=10, sticky="nsew")
-# Switch label right
-switch_right = customtkinter.CTkSwitch(root, text="Full arduino code", command=toggle_switch)
-switch_right.grid(row=1, column=1, padx=10, sticky="nsew")
+# Switch label right not ready to use
+# switch_right = customtkinter.CTkSwitch(root, text="Full arduino code", command=toggle_switch)
+# switch_right.grid(row=1, column=1, padx=10, sticky="nsew")
 
 # "Clear all" button 
 clear_all_button = customtkinter.CTkButton(root, text="Clear All", command=clear_all)
