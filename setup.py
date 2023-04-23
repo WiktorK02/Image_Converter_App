@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 REQUIREMENTS = [i.strip() for i in open("/home/wiktor/Image_Converter_App/requirements.txt").readlines()]
 LONG_DESCRIPTION = 'About Image converter GUI App to arduino oled display ssd1306 128x64'
 setup(
-   name='image_to_arduino',
-   version='1.0.3.1',
+   name='image-to-arduino',
+   version='1.0.3.2',
    description='Image converter to arduino',
    license="MIT",
    author='WiktorK02',
