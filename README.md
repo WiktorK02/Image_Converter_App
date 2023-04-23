@@ -3,11 +3,41 @@
 Application has been created in order to easy convert image into your <strong>Arduino</strong> project with <strong>oled displays</strong>
 ### How does it work:
 While you open .png and .jpg (others extensions in the future) image in app, the algorithm convert it to hexdeicmal array. Then it             returns full     code, ready to copy and put into the Arduino IDE. You can also preview how image will you like on your dislplay
- ## Screenshots  
+## Demo
  <p align="center">
-<img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="400" height="560">
+<img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="350" height="560">
 </p>
 
+## How to install 
+### Linux: 
+```
+$ pip install image-to-arduino
+```
+```
+$ sudo apt-get install python3-tk
+```
+## How to run
+```
+$ pip show image-to-arduino
+```
+copy location path and add ```/src``` to the end
+```
+$ cd <copyied path/src>
+```
+### For example:
+```
+$ pip show image-to-arduino
+Location: /home/usr/Image_Converter_App
+$ cd /home/usr/Image_Converter_App/src
+```
+### Mark the file as an executable:
+```
+$ chmod +x image_to_arduino.py 
+```
+### Run the script:
+```
+$ python3 image_to_arduino.py 
+```
 ## How to connect display to Arduino
 
 <p align="center">
@@ -24,8 +54,8 @@ $ git clone https://github.com/YOUR-USERNAME/Image_Converter_App
 ```
 3. Create new branch:<br>
 ```
-git branch BRANCH-NAME 
-git checkout BRANCH-NAME
+$ git branch BRANCH-NAME 
+$ git checkout BRANCH-NAME
 ```
 4. Make changes and test<br>
 5. Submit Pull Request with comprehensive description of change
@@ -49,6 +79,6 @@ git checkout BRANCH-NAME
 * openCV
 * numpy
 ## Version
-Version 1.0
+Version 1.0.3
 ## License 
 [MIT license](LICENSE)
