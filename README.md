@@ -9,13 +9,14 @@ While you open .png and .jpg (others extensions in the future) image in app, the
 </p>
 
 ## How to install
-#### First of all download python, pip and check version
+### Step 1:
+Download python, pip and check version
 ```
 pip3 --version 
 python --version
 ```
-
-### Windows:
+### Step 2:
+#### Windows:
 Type into CMD:
 ```
 pip3 install image-to-arduino
@@ -23,14 +24,14 @@ pip3 install image-to-arduino
 ```
 pip3 install tk
 ```
-### Linux: 
+#### Linux: 
 ```
 $ pip3 install image-to-arduino
 ```
 ```
 $ sudo apt-get install python3-tk
 ```
-### Mac OS:
+#### Mac OS:
 ```
 ~ % pip3 install image-to-arduino
 ```
@@ -38,6 +39,7 @@ $ sudo apt-get install python3-tk
 ~ % pip3 install tk 
 ```
 ## How to run
+### Step 1:
 ```
 $ pip3 show image-to-arduino
 ```
@@ -45,28 +47,29 @@ copy location path and add ```/src``` at the end
 ```
 $ cd <copyied path>/src
 ```
-### For example:
+#### For example:
 ```
 $ pip3 show image-to-arduino
 Location: /home/usr/Image_Converter_App
 $ cd /home/usr/Image_Converter_App/src
 ```
-### Windows:
-#### Run the script:
+### Step 2:
+#### Windows:
+Run the script:
 ```
 python image-to-arduino.py
 ```
-### Linux/Mac OS:
-#### Mark the file as an executable:
+#### Linux/Mac OS:
+Mark the file as an executable:
 ```
 $ chmod +x image-to-arduino.py 
 ```
-#### Run the script:
+Run the script:
 ```
 $ python3 image-to-arduino.py 
 ```
 ## How to upgrade version
-### Windows/Linux/Mac OS:
+#### Windows/Linux/Mac OS:
 ```
 $ pip3 install --upgrade image-to-arduino
 ```
