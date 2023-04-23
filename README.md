@@ -11,14 +11,25 @@ While you open .png and .jpg (others extensions in the future) image in app, the
 ## How to install 
 ### Linux: 
 ```
-$ pip install image-to-arduino
+$ pip3 install image-to-arduino
 ```
 ```
 $ sudo apt-get install python3-tk
 ```
+### Mac OS:
+#### Install brew:
+```
+~ % /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+(it may take a while)
+
+~ % brew update
+~ % brew install python@3.9
+~ % brew install tcl-tk
+```
 ## How to run
 ```
-$ pip show image-to-arduino
+$ pip3 show image-to-arduino
 ```
 copy location path and add ```/src``` to the end
 ```
@@ -26,7 +37,7 @@ $ cd <copyied path/src>
 ```
 ### For example:
 ```
-$ pip show image-to-arduino
+$ pip3 show image-to-arduino
 Location: /home/usr/Image_Converter_App
 $ cd /home/usr/Image_Converter_App/src
 ```
@@ -79,6 +90,6 @@ $ git checkout BRANCH-NAME
 * openCV
 * numpy
 ## Version
-Version 1.0.3
+Version 1.0.3.1
 ## License 
 [MIT license](LICENSE)
