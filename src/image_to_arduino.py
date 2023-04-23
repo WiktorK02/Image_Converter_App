@@ -12,7 +12,8 @@ import imghdr
 
 file_path = ''
 image_tk = ''
-switch_state = False
+left_switch_state = False
+right_switch_state = False
 
 def open_file():
     global file_path
@@ -43,7 +44,7 @@ def generate_text():
                 # Convert the image to a PIL Image object
                 image_pre = Image.fromarray(cv2.threshold(grayscale_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1])
 
-                if switch_state == True:
+                if left_switch_state == True:
                     # Reverse the colors of the image
                     image_pre = ImageOps.invert(image_pre)
                 
@@ -56,7 +57,7 @@ def generate_text():
             
                 _, thresholded_image = cv2.threshold(grayscale_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-                if switch_state == True:
+                if left_switch_state == True:
                     # Convert the thresholded image to a binary array (0s and 1s)
                     binary_array = np.where(thresholded_image > 0, 0, 1)
                 else:
@@ -78,8 +79,29 @@ def generate_text():
             cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
             cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
 
-            # Generate C++ array
-            cpp_array = 'unsigned char my_array[] = {\n' + cpp_array + '\n};'
+            if right_switch_state == False:
+                # Generate C++ array
+                cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + cpp_array + '\n};' 
+            elif right_switch_state == True:
+                # Generate full code ready to use 
+                cpp_array = '''#include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h>
+#define OLED_RESET 4
+Adafruit_SSD1306 display(OLED_RESET);
+const unsigned char PROGMEM''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {''' +  cpp_array + ''' };
+void setup() 
+{
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+    display.display();
+    delay(2000);
+    display.clearDisplay();}
+void loop() 
+{
+    display.drawBitmap(0, 0, ''' + os.path.splitext(os.path.basename(file_path))[0] + ''', 128, 64, 1); 
+    display.display();
+    delay(5000);
+    display.clearDisplay();
+    delay(5000);}'''        
 
             output_text.delete(1.0, tk.END)
             output_text.insert(tk.END, cpp_array)
@@ -102,17 +124,21 @@ def copy_all():
     root.clipboard_append(output_text.get(1.0, tk.END))
     copied_all_label.configure(text="✓ Copied")
 
-def toggle_switch():
-    global switch_state
-    switch_state = not switch_state
+def toggle_left_switch():
+    global left_switch_state
+    left_switch_state = not left_switch_state
+
+def toggle_right_switch():
+    global right_switch_state
+    right_switch_state = not right_switch_state
 
 def clear_all():
     # Clear output text and image preview
     output_text.delete(1.0, tk.END)
     image_preview_label.config(image="")
 
-customtkinter.set_appearance_mode("System")  
-customtkinter.set_default_color_theme("blue")  
+customtkinter.set_appearance_mode("dark")  
+customtkinter.set_default_color_theme("dark-blue")  
 
 # Create customtkinter window
 root = customtkinter.CTk() 
@@ -150,15 +176,16 @@ preview_text_label = customtkinter.CTkLabel(root, text="Preview")
 preview_text_label.grid(row=5, column=0, pady=5, padx=10)
 
 # Label to display the image
-image_preview_label = tk.Label(root)
+image_preview_label = tk.Label(root, bg="#1b1a1b")
 image_preview_label.grid(row=6, column=0, columnspan=1, padx=10)
 
-# Switch label
-switch = customtkinter.CTkSwitch(root, text="Reverse colors", command=toggle_switch)
+# Switch label left
+switch = customtkinter.CTkSwitch(root, text="Reverse colors", command=toggle_left_switch)
 switch.grid(row=1, column=0, padx=10, sticky="nsew")
-# Switch label right not ready to use
-# switch_right = customtkinter.CTkSwitch(root, text="Full arduino code", command=toggle_switch)
-# switch_right.grid(row=1, column=1, padx=10, sticky="nsew")
+
+# Switch label right 
+switch_right = customtkinter.CTkSwitch(root, text="Full arduino code", command=toggle_right_switch)
+switch_right.grid(row=1, column=1, padx=10, sticky="nsew")
 
 # "Clear all" button 
 clear_all_button = customtkinter.CTkButton(root, text="Clear All", command=clear_all)
