@@ -88,7 +88,7 @@ def generate_text():
 #include <Adafruit_GFX.h>
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-const unsigned char PROGMEM''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {''' +  cpp_array + ''' };
+const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {''' +  cpp_array + ''' };
 void setup() 
 {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
