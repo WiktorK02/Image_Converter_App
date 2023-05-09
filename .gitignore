@@ -1,5 +1,0 @@
-build/
-dist/
-image_to_arduino.egg-info/
-__pycache__/
-*.py[cod]
