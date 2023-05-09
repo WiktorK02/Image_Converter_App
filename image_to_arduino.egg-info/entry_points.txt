@@ -1,0 +1,2 @@
+[console_scripts]
+image-to-arduino = image_to_arduino.__main__:main

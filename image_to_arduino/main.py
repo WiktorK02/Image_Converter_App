@@ -13,6 +13,7 @@ file_path = ''
 image_tk = ''
 left_switch_state = False
 right_switch_state = False
+
 def main():
 
     def open_file():
@@ -85,23 +86,23 @@ def main():
                 elif right_switch_state == True:
                     # Generate full code ready to use 
                     cpp_array = '''#include <Adafruit_SSD1306.h>
-    #include <Adafruit_GFX.h>
-    #define OLED_RESET 4
-    Adafruit_SSD1306 display(OLED_RESET);
-    const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {''' +  cpp_array + ''' };
-    void setup() 
-    {
-        display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-        display.display();
-        delay(2000);
-        display.clearDisplay();}
-    void loop() 
-    {
-        display.drawBitmap(0, 0, ''' + os.path.splitext(os.path.basename(file_path))[0] + ''', 128, 64, 1); 
-        display.display();
-        delay(5000);
-        display.clearDisplay();
-        delay(5000);}'''        
+#include <Adafruit_GFX.h>
+#define OLED_RESET 4
+Adafruit_SSD1306 display(OLED_RESET);
+const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {\n''' +  cpp_array + ''' };
+void setup() 
+{
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+    display.display();
+    delay(2000);
+    display.clearDisplay();}
+void loop() 
+{
+    display.drawBitmap(0, 0, ''' + os.path.splitext(os.path.basename(file_path))[0] + ''', 128, 64, 1); 
+    display.display();
+    delay(5000);
+    display.clearDisplay();
+    delay(5000);}'''        
 
                 output_text.delete(1.0, tk.END)
                 output_text.insert(tk.END, cpp_array)
@@ -195,5 +196,3 @@ def main():
     root.resizable(False, False)
 
     root.mainloop()
-if __name__ == '__main__':
-    main()
