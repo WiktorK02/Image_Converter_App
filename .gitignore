@@ -1,5 +1,5 @@
 build/
 dist/
-gravitypy.egg-info/
+image_to_arduino.egg-info/
 __pycache__/
 *.py[cod]
