@@ -19,6 +19,10 @@ $ python --version
 #### Windows/Linux/Mac OS:
 ```
 $ pip3 install image-to-arduino
+```
+### Run
+#### Windows/Linux/Mac OS:
+```
 $ image-to-arduino
 ```
 ### How to upgrade version
@@ -66,7 +70,5 @@ $ git checkout BRANCH-NAME
 * customtkinter
 * openCV
 * numpy
-## Version
-Version 1.0.3.2
 ## License 
 [MIT license](LICENSE)
