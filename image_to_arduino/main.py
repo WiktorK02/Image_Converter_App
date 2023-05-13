@@ -1,29 +1,147 @@
 #!/usr/bin/env python3
 import tkinter as tk
 import customtkinter 
-from tkinter import filedialog
+from tkinter            import filedialog
 import cv2
-import numpy as np
-from PIL import Image, ImageTk, ImageOps
+import numpy            as np
+from PIL                import Image, ImageTk, ImageOps
 import os
-
-# To check extenxion
 import imghdr
+import time
+
 file_path = ''
 image_tk = ''
 left_switch_state = False
 right_switch_state = False
+image_previews = []
 
 def main():
+
 
     def open_file():
         global file_path
         file_path = filedialog.askopenfilename()
         if file_path:
             # If file name len is greater than 15: return ... + extension
-            file_label.configure(text="File: " + (os.path.basename(file_path) if len(os.path.basename(file_path)) < 15 else "..." + imghdr.what(file_path)))
+            file_label.configure(
+                text="File: "
+                + (
+                    os.path.basename(file_path)
+                    if len(os.path.basename(file_path)) < 15
+                    else "..." + imghdr.what(file_path)
+                )
+            )
         else:
             file_label.configure(text="No file selected")
+    def image_conv(file_path, gif):
+        if not gif:
+            img = Image.open(file_path).convert("RGBA")
+   
+        else:
+            img = file_path.convert("RGBA")
+
+            # Replace transparent pixels with white
+        img = Image.alpha_composite(Image.new("RGBA", img.size, (255, 255, 255, 255)), img)
+
+        img = img.resize((128, 64))
+
+        img = ImageOps.grayscale(img)
+        if left_switch_state == True:
+            # Reverse the colors of the image
+            img= ImageOps.invert(img)
+        # Convert the PIL Image to a NumPy array and apply thresholding
+        img_arr = np.array(img)
+        _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+        # Convert the thresholded image to a binary array (0s and 1s)
+        binary_array = np.where(thresholded_image > 0, 1, 0)
+        
+        # Convert the binary array to a 1D array
+        one_d_array = binary_array.flatten()
+
+        # Split the binary alpha values into 8-byte arrays
+        byte_arrays = np.packbits(one_d_array)
+
+        # Convert byte arrays to hexadecimal format
+        hex_byte_arrays = ['0x' + format(byte, '02x') for byte in byte_arrays]
+
+        cpp_array = ', '.join(hex_byte_arrays)
+        # Insert newline after every 10 hexadecimal numbers
+        cpp_array = [cpp_array[i:i+2] for i in range(0, len(cpp_array), 2)]  # Split into pairs of hexadecimal numbers
+        cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
+        cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
+        
+        return cpp_array
+    def update_img_pre():
+        global image_previews
+        image_previews = []
+        img = Image.open(file_path).convert("RGBA")
+
+            # Replace transparent pixels with white
+        img = Image.alpha_composite(Image.new("RGBA", img.size, (255, 255, 255, 255)), img)
+
+        img = img.resize((128, 64))
+
+        img = ImageOps.grayscale(img)
+        if left_switch_state == True:
+            # Reverse the colors of the image
+            img= ImageOps.invert(img)
+        # Convert the PIL Image to a NumPy array and apply thresholding
+        img_arr = np.array(img)
+        _, thresholded_image = cv2.threshold(img_arr, 255, 0, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        
+        image_preview_label.config(image="")
+        bw_img = Image.fromarray(thresholded_image).convert('L')
+         # Update image preview
+        image_pre = ImageTk.PhotoImage(bw_img)
+        image_preview_label.config(image=image_pre)
+        image_preview_label.image = image_pre
+
+    def update_gif():
+        global image_previews
+        frames_list = []
+        image_previews = []
+        with Image.open(file_path) as im:
+            for frame in range(im.n_frames):
+                # Select the current frame
+                im.seek(frame)
+                # Create a new image object from the current frame
+                frame_image = im.copy()
+
+                # Resize the image
+                frame_image = frame_image.resize((128, 64))
+
+                # Convert the image to grayscale
+                frame_image = ImageOps.grayscale(frame_image)
+
+                # Calculate the brightness of each pixel
+                brightness = np.array(frame_image)
+                # Apply thresholding based on brightness
+                thresholded_image = np.where(brightness >= 128, 255, 0).astype('uint8')
+
+                # Invert the image if left switch is on
+                if left_switch_state:
+                    thresholded_image = cv2.bitwise_not(thresholded_image)
+
+                # Convert the NumPy array to a PIL Image
+                bw_img = Image.fromarray(thresholded_image).convert('L')
+
+                # Create a PhotoImage from the PIL Image and add it to the list of image previews
+                photo = ImageTk.PhotoImage(bw_img)
+                image_previews.append(photo)
+
+        # Display the first frame preview
+        current_frame = 0
+        
+        # Function to update the preview with the next frame
+        def update_preview():
+            nonlocal current_frame
+            current_frame = (current_frame+1) % len(image_previews)
+            image_preview_label.config(image=image_previews[current_frame])
+            image_preview_label.after(100, update_preview)  # Update every 100 ms
+        
+        # Start updating the preview
+        image_preview_label.after(100, update_preview)
 
     def generate_text():
         global image_tk, switch_var
@@ -31,65 +149,18 @@ def main():
             try:
                 # To check extenxion
                 extension = imghdr.what(file_path)
-
                 if  extension == "jpeg" or extension == "png":
-                    # Load image
-                    image = cv2.imread(file_path, cv2.IMREAD_COLOR)
-                    
-                    # Resize the image to 128x64
-                    image = cv2.resize(image, (128, 64))
-                    
-                    # Convert RGB image to grayscale
-                    grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                    
-                    # Convert the image to a PIL Image object
-                    image_pre = Image.fromarray(cv2.threshold(grayscale_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1])
-
-                    if left_switch_state == True:
-                        # Reverse the colors of the image
-                        image_pre = ImageOps.invert(image_pre)
-                    
-                    # Convert the PIL Image to a PhotoImage object
-                    image_pre = ImageTk.PhotoImage(image_pre)
-                    
-                    # Update the label's image
-                    image_preview_label.config(image=image_pre)
-                    image_preview_label.image = image_pre
-                
-                    _, thresholded_image = cv2.threshold(grayscale_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-                    if left_switch_state == True:
-                        # Convert the thresholded image to a binary array (0s and 1s)
-                        binary_array = np.where(thresholded_image > 0, 0, 1)
-                    else:
-                        # Convert the thresholded image to a binary array (0s and 1s)
-                        binary_array = np.where(thresholded_image > 0, 1, 0)
-
-                # Convert the binary array to a 1D array
-                one_d_array = binary_array.flatten()
-
-                # Split the binary alpha values into 8-byte arrays
-                byte_arrays = np.packbits(one_d_array)
-
-                # Convert byte arrays to hexadecimal format
-                hex_byte_arrays = ['0x' + format(byte, '02x') for byte in byte_arrays]
-
-                cpp_array = ', '.join(hex_byte_arrays)
-                # Insert newline after every 10 hexadecimal numbers
-                cpp_array = [cpp_array[i:i+2] for i in range(0, len(cpp_array), 2)]  # Split into pairs of hexadecimal numbers
-                cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
-                cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
-
-                if right_switch_state == False:
-                    # Generate C++ array
-                    cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + cpp_array + '\n};' 
-                elif right_switch_state == True:
-                    # Generate full code ready to use 
-                    cpp_array = '''#include <Adafruit_SSD1306.h>
+                    update_img_pre()
+                    if right_switch_state == False:
+                        # Generate C++ array
+                        cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + image_conv(file_path, False)+ '\n};' 
+                    elif right_switch_state == True:
+                        # Generate full code ready to use 
+                        cpp_array = '''#include <Adafruit_SSD1306.h>
 #include <Adafruit_GFX.h>
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {\n''' +  cpp_array + ''' };
+const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {\n''' +  image_conv(file_path, False) + ''' };
 void setup() 
 {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
@@ -104,10 +175,11 @@ void loop()
     display.clearDisplay();
     delay(5000);}'''        
 
-                output_text.delete(1.0, tk.END)
-                output_text.insert(tk.END, cpp_array)
-            
-            # In case of error or invalid extension 
+                    output_text.delete(1.0, tk.END)
+                    output_text.insert(tk.END, cpp_array)
+                elif extension == "gif":
+                    update_gif()
+            # In case of error or invalid extension         
             except:
                 output_text.delete(1.0, tk.END)
                 output_text.insert(tk.END, "Error generating text")
@@ -116,7 +188,6 @@ void loop()
             output_text.insert(tk.END, "Select any file")
 
     def copy_all():
-        global file_path
         if not file_path:
             copied_all_label.configure(text="No text to copy")
             return
@@ -134,9 +205,11 @@ void loop()
         right_switch_state = not right_switch_state
 
     def clear_all():
+        global image_previews
         # Clear output text and image preview
         output_text.delete(1.0, tk.END)
         image_preview_label.config(image="")
+        image_previews = []
 
     customtkinter.set_appearance_mode("dark")  
     customtkinter.set_default_color_theme("dark-blue")  
@@ -146,14 +219,14 @@ void loop()
     root.title("Image to arduino")
 
     # Set window size
-    root.geometry("330x550") # Set width and height as desired
+    root.geometry("320x550") # Set width and height as desired
 
     # Label for displaying selected file path
     file_label =  customtkinter.CTkLabel(root, text="No file selected")
     file_label.grid(row=0, column=0, padx=10, columnspan=1, sticky="nsew", pady=5)
 
     # "Open File" button
-    open_file_button = customtkinter.CTkButton(root, text="Open Image File", command=open_file)
+    open_file_button = customtkinter.CTkButton(root, text="Open File", command=open_file)
     open_file_button.grid(row=0, column=1, padx=10, pady=5, columnspan=1, sticky="nsew")
 
     # "Generate" button
@@ -196,3 +269,4 @@ void loop()
     root.resizable(False, False)
 
     root.mainloop()
+main()
