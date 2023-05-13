@@ -13,7 +13,6 @@ file_path = ''
 image_tk = ''
 left_switch_state = False
 right_switch_state = False
-image_previews = []
 
 def main():
 
@@ -33,13 +32,9 @@ def main():
             )
         else:
             file_label.configure(text="No file selected")
-    def image_conv(file_path, gif):
-        if not gif:
-            img = Image.open(file_path).convert("RGBA")
-   
-        else:
-            img = file_path.convert("RGBA")
+    def image_conv():
 
+        img = Image.open(file_path).convert("RGBA")
             # Replace transparent pixels with white
         img = Image.alpha_composite(Image.new("RGBA", img.size, (255, 255, 255, 255)), img)
 
@@ -73,10 +68,7 @@ def main():
         
         return cpp_array
     def update_img_pre():
-        global image_previews
-        image_previews = []
         img = Image.open(file_path).convert("RGBA")
-
             # Replace transparent pixels with white
         img = Image.alpha_composite(Image.new("RGBA", img.size, (255, 255, 255, 255)), img)
 
@@ -88,7 +80,7 @@ def main():
             img= ImageOps.invert(img)
         # Convert the PIL Image to a NumPy array and apply thresholding
         img_arr = np.array(img)
-        _, thresholded_image = cv2.threshold(img_arr, 255, 0, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         
         image_preview_label.config(image="")
         bw_img = Image.fromarray(thresholded_image).convert('L')
@@ -96,7 +88,6 @@ def main():
         image_pre = ImageTk.PhotoImage(bw_img)
         image_preview_label.config(image=image_pre)
         image_preview_label.image = image_pre
-
     def update_gif():
         global image_previews
         frames_list = []
@@ -110,10 +101,12 @@ def main():
 
                 # Resize the image
                 frame_image = frame_image.resize((128, 64))
-
+                
                 # Convert the image to grayscale
                 frame_image = ImageOps.grayscale(frame_image)
-
+                # Set all transparent pixels to white
+                photo = ImageTk.PhotoImage(frame_image)
+                image_previews.append(photo)
                 # Calculate the brightness of each pixel
                 brightness = np.array(frame_image)
                 # Apply thresholding based on brightness
@@ -127,8 +120,8 @@ def main():
                 bw_img = Image.fromarray(thresholded_image).convert('L')
 
                 # Create a PhotoImage from the PIL Image and add it to the list of image previews
-                photo = ImageTk.PhotoImage(bw_img)
-                image_previews.append(photo)
+                
+                
 
         # Display the first frame preview
         current_frame = 0
@@ -146,21 +139,21 @@ def main():
     def generate_text():
         global image_tk, switch_var
         if not file_path == '':    
-            try:
+            #try:
                 # To check extenxion
                 extension = imghdr.what(file_path)
                 if  extension == "jpeg" or extension == "png":
                     update_img_pre()
                     if right_switch_state == False:
                         # Generate C++ array
-                        cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + image_conv(file_path, False)+ '\n};' 
+                        cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + image_conv()+ '\n};' 
                     elif right_switch_state == True:
                         # Generate full code ready to use 
                         cpp_array = '''#include <Adafruit_SSD1306.h>
 #include <Adafruit_GFX.h>
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {\n''' +  image_conv(file_path, False) + ''' };
+const unsigned char PROGMEM ''' + os.path.splitext(os.path.basename(file_path))[0] + '''[] = {\n''' +  image_conv() + ''' };
 void setup() 
 {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
@@ -180,13 +173,12 @@ void loop()
                 elif extension == "gif":
                     update_gif()
             # In case of error or invalid extension         
-            except:
-                output_text.delete(1.0, tk.END)
-                output_text.insert(tk.END, "Error generating text")
+            #except:
+               # output_text.delete(1.0, tk.END)
+                #output_text.insert(tk.END, "Error generating text")
         else: 
             output_text.delete(1.0, tk.END)
             output_text.insert(tk.END, "Select any file")
-
     def copy_all():
         if not file_path:
             copied_all_label.configure(text="No text to copy")
