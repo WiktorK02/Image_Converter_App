@@ -67,6 +67,7 @@ def main():
         cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
         
         return cpp_array
+   
     def update_img_pre():
         img = Image.open(file_path).convert("RGBA")
             # Replace transparent pixels with white
@@ -88,45 +89,49 @@ def main():
         image_pre = ImageTk.PhotoImage(bw_img)
         image_preview_label.config(image=image_pre)
         image_preview_label.image = image_pre
+    
     def update_gif():
         global image_previews
         frames_list = []
         image_previews = []
-        with Image.open(file_path) as im:
-            for frame in range(im.n_frames):
-                # Select the current frame
-                im.seek(frame)
-                # Create a new image object from the current frame
-                frame_image = im.copy()
+        # open the GIF file
+        gif_file = Image.open(file_path)
 
-                # Resize the image
-                frame_image = frame_image.resize((128, 64))
-                
-                # Convert the image to grayscale
-                frame_image = ImageOps.grayscale(frame_image)
-                # Set all transparent pixels to white
-                photo = ImageTk.PhotoImage(frame_image)
-                image_previews.append(photo)
-                # Calculate the brightness of each pixel
-                brightness = np.array(frame_image)
-                # Apply thresholding based on brightness
-                thresholded_image = np.where(brightness >= 128, 255, 0).astype('uint8')
+        # loop through each frame of the GIF
+        for frame in range(0, gif_file.n_frames):
+            gif_file.seek(frame)
 
-                # Invert the image if left switch is on
-                if left_switch_state:
-                    thresholded_image = cv2.bitwise_not(thresholded_image)
+            # extract the transparency mask if it exists
+            transparency_mask = gif_file.convert("RGBA").split()[-1] if gif_file.info.get("transparency") else None
 
-                # Convert the NumPy array to a PIL Image
-                bw_img = Image.fromarray(thresholded_image).convert('L')
+            # create a new RGBA image with the same size as the original
+            new_image = Image.new("RGBA", gif_file.size)
 
-                # Create a PhotoImage from the PIL Image and add it to the list of image previews
-                
-                
+            # paste the current frame onto the new image, preserving transparency
+            new_image.paste(gif_file, (0, 0), transparency_mask)
+
+                # Replace transparent pixels with white
+            new_image = Image.alpha_composite(Image.new("RGBA", new_image.size, (255, 255, 255, 255)), new_image)
+
+            new_image = new_image.resize((128, 64))
+
+            new_image = ImageOps.grayscale(new_image)
+            if left_switch_state == True:
+                # Reverse the colors of the image
+                new_image= ImageOps.invert(new_image)
+            # Convert the PIL Image to a NumPy array and apply thresholding
+            img_arr = np.array(new_image)
+            _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            image_preview_label.config(image="")
+            bw_img = Image.fromarray(thresholded_image).convert('L')
+            photo = ImageTk.PhotoImage(bw_img)
+            image_previews.append(photo)
 
         # Display the first frame preview
         current_frame = 0
-        
-        # Function to update the preview with the next frame
+
+
         def update_preview():
             nonlocal current_frame
             current_frame = (current_frame+1) % len(image_previews)
