@@ -53,14 +53,18 @@ $ git checkout BRANCH-NAME
 5. Submit Pull Request with comprehensive description of change
 
 ## Task list
-* <del> upgrade graphics and style </del><br>
-* <del> add more functions </del><br>
 * add more than one display size<br>
 * make icon of the app<br>
-* <del> show preview of an image </del> <br>
 * make app as .exe <br>
+* fix issue with generating dark png images with trancparency
+* resize window (width)
+* optimize gif extension option (or remove it)
+* test software
 * <del> reverse color of image </del><br>
 * <del> create function which generate full arduino code(not only arduino array) and connect it to switch button</del>
+* <del> show preview of an image </del> <br>
+* <del> upgrade graphics and style </del><br>
+* <del> add more functions </del><br>
 ## What I have learned
 *	tkinter library skills 
 *	basics of UX and GUI
