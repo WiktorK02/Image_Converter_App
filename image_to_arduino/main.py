@@ -356,4 +356,3 @@ void loop()
     root.resizable(False, False)
 
     root.mainloop()
-main()
