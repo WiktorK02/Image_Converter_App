@@ -4,9 +4,9 @@ Application has been created in order to easy convert images into your <strong>A
 ### How does it work:
 While you open .png and .jpg (others extensions in the future) image in app, the algorithm convert it to hexdeicmal array. Then it             returns full     code, ready to copy and put into the Arduino IDE. You can also preview how image will you like on your dislplay
 ## Demo
- <p align="center">
-<img src="https://user-images.githubusercontent.com/123249470/232137289-ff2707a7-a4bf-4e55-88a5-a469f54c3c3d.gif" width="350" height="560">
-</p>
+![1](https://github.com/WiktorK02/image-to-arduino/assets/123249470/13ef2888-5a98-4d0a-a8c5-c2dc26e7ea3c)
+![3](https://github.com/WiktorK02/image-to-arduino/assets/123249470/1e1bb538-91c3-4565-840a-62a25afd3da4)
+![4](https://github.com/WiktorK02/image-to-arduino/assets/123249470/580678dc-633b-4454-9760-37843860272c)
 
 ## Getting Started
 ### Prerequisites
