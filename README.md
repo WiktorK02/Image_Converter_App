@@ -1,3 +1,4 @@
+![{0ximage, 0xto, 0xarduino} (2)](https://github.com/WiktorK02/image-to-arduino/assets/123249470/0d7c1363-9f5e-4ce6-9d60-7f8a966d54be)
 # Image Converter GUI APP for Arduino oled display ssd1306 128x64
 ## About Project
 Application has been created in order to easy convert images into your <strong>Arduino</strong> project with <strong>oled displays</strong>
