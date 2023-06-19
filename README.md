@@ -56,10 +56,10 @@ $ git checkout BRANCH-NAME
 * add more than one display size<br>
 * make icon of the app<br>
 * make app as .exe <br>
-* fix issue with generating dark png images with trancparency
 * resize window (width)
 * optimize gif extension option (or remove it)
 * test software
+* <del> fix issue with generating dark png images with trancparency <del>
 * <del> reverse color of image </del><br>
 * <del> create function which generate full arduino code(not only arduino array) and connect it to switch button</del>
 * <del> show preview of an image </del> <br>
@@ -67,7 +67,7 @@ $ git checkout BRANCH-NAME
 * <del> add more functions </del><br>
 ## What I have learned
 *	tkinter library skills 
-*	basics of UX and GUI
+*	basics of GUI
 *	image processing 
 ## Used libraries
 * tkinter 
