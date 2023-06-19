@@ -7,12 +7,14 @@ import numpy            as np
 from PIL                import Image, ImageTk, ImageOps
 import os
 import imghdr
-import time
+import traceback
+
 
 file_path = ''
 image_tk = ''
 left_switch_state = False
 right_switch_state = False
+png_switch_state = False
 
 def main():
 
@@ -33,63 +35,143 @@ def main():
         else:
             file_label.configure(text="No file selected")
     def image_conv():
-
-        img = Image.open(file_path).convert("RGBA")
-            # Replace transparent pixels with white
-        img = Image.alpha_composite(Image.new("RGBA", img.size, (255, 255, 255, 255)), img)
-
-        img = img.resize((128, 64))
-
-        img = ImageOps.grayscale(img)
-        if left_switch_state == True:
+        if not png_switch_state:
+            img = Image.open(file_path).convert("RGBA")
+            img = img.resize((128, 64))
+            img = ImageOps.grayscale(img)
+            if left_switch_state:
             # Reverse the colors of the image
-            img= ImageOps.invert(img)
-        # Convert the PIL Image to a NumPy array and apply thresholding
-        img_arr = np.array(img)
-        _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-        # Convert the thresholded image to a binary array (0s and 1s)
-        binary_array = np.where(thresholded_image > 0, 1, 0)
+                img= ImageOps.invert(img)
+            
+            # Convert the PIL Image to a NumPy array and apply thresholding
+            img_arr = np.array(img)
+            _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            # Convert the thresholded image to a binary array (0s and 1s)
+            binary_array = np.where(thresholded_image > 0, 1, 0)
+            
+            # Convert the binary array to a 1D array
+            one_d_array = binary_array.flatten()
+            
+            # Split the binary alpha values into 8-byte arrays
+            byte_arrays = np.packbits(one_d_array)
+            
+            # Convert byte arrays to hexadecimal format
+            hex_byte_arrays = ['0x' + format(byte, '02x') for byte in byte_arrays]
+            
+            cpp_array = ', '.join(hex_byte_arrays)
+            
+            # Insert newline after every 10 hexadecimal numbers
+            cpp_array = [cpp_array[i:i+2] for i in range(0, len(cpp_array), 2)]  # Split into pairs of hexadecimal numbers
+            cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
+            cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
+            
+            return cpp_array
+        else:
+            image = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+            image = cv2.resize(image, (128, 64))
+            
+            # Split the image into channels
+            b, g, r, a = cv2.split(image)
         
-        # Convert the binary array to a 1D array
-        one_d_array = binary_array.flatten()
+            
+            # Convert the thresholded image to a binary array (0s and 1s)
+            binary_array = np.where(a > 0, 1, 0)
+            
+            # Convert the binary array to a 1D array
+            one_d_array = binary_array.flatten()
+            
+            if left_switch_state:
+                one_d_array = 1 - one_d_array
+            
+            # Split the binary alpha values into 8-bit arrays
+            byte_arrays = np.packbits(one_d_array)
+            
+            # Convert byte arrays to hexadecimal format
+            hex_byte_arrays = ['0x' + format(byte, '02x') for byte in byte_arrays]
+            
+            cpp_array = ', '.join(hex_byte_arrays)
+            
+            # Insert newline after every 10 hexadecimal numbers
+            cpp_array = [cpp_array[i:i+2] for i in range(0, len(cpp_array), 2)]  # Split into pairs of hexadecimal numbers
+            cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
+            cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
+            
+            return cpp_array
 
-        # Split the binary alpha values into 8-byte arrays
-        byte_arrays = np.packbits(one_d_array)
-
-        # Convert byte arrays to hexadecimal format
-        hex_byte_arrays = ['0x' + format(byte, '02x') for byte in byte_arrays]
-
-        cpp_array = ', '.join(hex_byte_arrays)
-        # Insert newline after every 10 hexadecimal numbers
-        cpp_array = [cpp_array[i:i+2] for i in range(0, len(cpp_array), 2)]  # Split into pairs of hexadecimal numbers
-        cpp_array = [''.join(cpp_array[i:i+30]) for i in range(0, len(cpp_array), 30)]  # Join pairs with space, and group every 10 pairs
-        cpp_array = '\n'.join(cpp_array)  # Join groups with newline character
-        
-        return cpp_array
-   
     def update_img_pre():
-        img = Image.open(file_path).convert("RGBA")
-            # Replace transparent pixels with white
-        img = Image.alpha_composite(Image.new("RGBA", img.size, (255, 255, 255, 255)), img)
+        if not png_switch_state:
+            img = Image.open(file_path).convert("RGBA")
+            
+            img = img.resize((128, 64))
+            img = ImageOps.grayscale(img)
+            
+            if left_switch_state:
+                # Reverse the colors of the image
+                img = ImageOps.invert(img)
+            
+            # Convert the PIL Image to a NumPy array and apply thresholding
+            img_arr = np.array(img)
+            _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            image_preview_label.config(image="")
+            bw_img = Image.fromarray(thresholded_image)
+            
+            # Update image preview
+            image_pre = ImageTk.PhotoImage(bw_img)
+            image_preview_label.config(image=image_pre)
+            image_preview_label.image = image_pre
+        else:    
+            image = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+            # Split the image into channels
+            b, g, r, a = cv2.split(image)
+            # Check if the image has an alpha channel
+            if image.shape[2] == 4 and left_switch_state:
+                
+                # Set transparent pixels to white
+                white_mask = (a == 0)
+                b[white_mask] = 255
+                g[white_mask] = 255
+                r[white_mask] = 255
+                
+                # Set non-transparent pixels to black
+                non_transparent_mask = (a > 0)
+                b[non_transparent_mask] = 0
+                g[non_transparent_mask] = 0
+                r[non_transparent_mask] = 0
+                # Set white pixels to non-transparent (alpha to 255)
+                white_pixels = (b == 255) & (g == 255) & (r == 255)
+                a[white_pixels] = 255
+                
+            elif not left_switch_state:
+                # Set transparent pixels to white
+                white_mask = (a == 0)
+                b[white_mask] = 0
+                g[white_mask] = 0
+                r[white_mask] = 0
+                
+                # Set non-transparent pixels to black
+                non_transparent_mask = (a > 0)
+                b[non_transparent_mask] = 255
+                g[non_transparent_mask] = 255
+                r[non_transparent_mask] = 255
+                white_pixels = (b == 0) & (g == 0) & (r == 0)
+                a[white_pixels] = 255
+                
+            # Merge the channels back into a single image
+            image = cv2.merge((b, g, r, a))
+            # Convert the image to a NumPy array
+            img_arr = np.array(image)
 
-        img = img.resize((128, 64))
-
-        img = ImageOps.grayscale(img)
-        if left_switch_state == True:
-            # Reverse the colors of the image
-            img= ImageOps.invert(img)
-        # Convert the PIL Image to a NumPy array and apply thresholding
-        img_arr = np.array(img)
-        _, thresholded_image = cv2.threshold(img_arr, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        
-        image_preview_label.config(image="")
-        bw_img = Image.fromarray(thresholded_image).convert('L')
-         # Update image preview
-        image_pre = ImageTk.PhotoImage(bw_img)
-        image_preview_label.config(image=image_pre)
-        image_preview_label.image = image_pre
-    
+            image_preview_label.config(image="")
+            resized_image = cv2.resize(img_arr, (128, 64))
+            bw_img = Image.fromarray(resized_image)
+            
+            # Update image preview
+            image_pre = ImageTk.PhotoImage(bw_img)
+            image_preview_label.config(image=image_pre)
+            image_preview_label.image = image_pre
+   
     def update_gif():
         global image_previews
         frames_list = []
@@ -144,14 +226,14 @@ def main():
     def generate_text():
         global image_tk, switch_var
         if not file_path == '':    
-            #try:
+            try:
                 # To check extenxion
                 extension = imghdr.what(file_path)
                 if  extension == "jpeg" or extension == "png":
                     update_img_pre()
                     if right_switch_state == False:
                         # Generate C++ array
-                        cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + image_conv()+ '\n};' 
+                        cpp_array = 'const unsigned char PROGMEM ' + os.path.splitext(os.path.basename(file_path))[0] + ' [] = {\n' + image_conv() + '\n};' 
                     elif right_switch_state == True:
                         # Generate full code ready to use 
                         cpp_array = '''#include <Adafruit_SSD1306.h>
@@ -178,9 +260,9 @@ void loop()
                 elif extension == "gif":
                     update_gif()
             # In case of error or invalid extension         
-            #except:
-               # output_text.delete(1.0, tk.END)
-                #output_text.insert(tk.END, "Error generating text")
+            except:
+                output_text.delete(1.0, tk.END)
+                output_text.insert(tk.END, "Error generating text")
         else: 
             output_text.delete(1.0, tk.END)
             output_text.insert(tk.END, "Select any file")
@@ -200,6 +282,10 @@ void loop()
     def toggle_right_switch():
         global right_switch_state
         right_switch_state = not right_switch_state
+    
+    def toggle_png_switch():
+        global png_switch_state
+        png_switch_state = not png_switch_state
 
     def clear_all():
         global image_previews
@@ -216,7 +302,7 @@ void loop()
     root.title("Image to arduino")
 
     # Set window size
-    root.geometry("320x550") # Set width and height as desired
+    root.geometry("340x600") # Set width and height as desired
 
     # Label for displaying selected file path
     file_label =  customtkinter.CTkLabel(root, text="No file selected")
@@ -228,31 +314,35 @@ void loop()
 
     # "Generate" button
     generate_button = customtkinter.CTkButton(root, text="Generate Code", command=generate_text)
-    generate_button.grid(row=2, column=0, padx=10, pady=5, columnspan=1, sticky="nsew")
+    generate_button.grid(row=3, column=0, padx=10, pady=5, columnspan=1, sticky="nsew")
 
     # "Copy All" button
     copy_all_button = customtkinter.CTkButton(root, text="Copy All", command=copy_all)
-    copy_all_button.grid(row=2, column=1, padx=10, pady=5, columnspan=1, sticky="nsew")  
+    copy_all_button.grid(row=3, column=1, padx=10, pady=5, columnspan=1, sticky="nsew")  
 
     # Output text 
     output_text = customtkinter.CTkTextbox(root, height = 280, width = 300 )   # 25 50
-    output_text.grid(row=3, column=0, padx=10, pady=5, columnspan=3, sticky="nsew")
+    output_text.grid(row=4, column=0, padx=10, pady=5, columnspan=3, sticky="nsew")
 
     # Label for displaying "Copied All" text
     copied_all_label =  customtkinter.CTkLabel(root, text="")
-    copied_all_label.grid(row=4, column=1, pady=5,columnspan=3, sticky="nsew")
+    copied_all_label.grid(row=5, column=1, pady=5,columnspan=3, sticky="nsew")
 
     # Preview text lael
     preview_text_label = customtkinter.CTkLabel(root, text="Preview")
-    preview_text_label.grid(row=5, column=0, pady=5, padx=10)
+    preview_text_label.grid(row=6, column=0, pady=5, padx=10)
 
     # Label to display the image
     image_preview_label = tk.Label(root, bg="#1b1a1b")
-    image_preview_label.grid(row=6, column=0, columnspan=1, padx=10)
+    image_preview_label.grid(row=7, column=0, columnspan=1, padx=10)
 
     # Switch label left
     switch = customtkinter.CTkSwitch(root, text="Reverse colors", command=toggle_left_switch)
     switch.grid(row=1, column=0, padx=10, sticky="nsew")
+
+    # Switch label png
+    switch = customtkinter.CTkSwitch(root, text="Remove background", command=toggle_png_switch)
+    switch.grid(row=2, column=0, padx=10, sticky="nsew")
 
     # Switch label right 
     switch_right = customtkinter.CTkSwitch(root, text="Full arduino code", command=toggle_right_switch)
@@ -260,7 +350,7 @@ void loop()
 
     # "Clear all" button 
     clear_all_button = customtkinter.CTkButton(root, text="Clear All", command=clear_all)
-    clear_all_button.grid(row=4, column=0, pady=5, padx=10, columnspan=1, sticky="nsew")  
+    clear_all_button.grid(row=5, column=0, pady=5, padx=10, columnspan=1, sticky="nsew")  
 
     # Configure the window to not be resizable
     root.resizable(False, False)
