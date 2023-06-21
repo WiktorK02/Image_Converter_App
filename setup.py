@@ -10,7 +10,7 @@ LONG_DESCRIPTION = 'About Image converter GUI App to arduino oled display ssd130
 
 setup(
    name='image-to-arduino',
-   version='1.0.4.5',
+   version='1.0.4.6',
    description='Image converter to arduino',
    license="MIT",
    author='WiktorK02',
