@@ -18,8 +18,10 @@ setup(
    url="https://github.com/WiktorK02/Image_Converter_App.git",
    long_description_content_type="text/markdown",
    long_description=LONG_DESCRIPTION,
-   packages=['image_to_arduino'],
-   package_data={'image_to_arduino': ['data/*.dat']},
+   packages=find_packages(),
+   include_package_data=True,
+   package_data={'gravitypy': ['*']},
+   data_files=[('image_to_arduino/icon', ['image_to_arduino/icon/icon.png'])],
    install_requires=REQUIREMENTS, 
     entry_points={
         'console_scripts': [

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 import tkinter as tk
 import customtkinter 
 from tkinter            import filedialog
@@ -269,6 +269,16 @@ void loop()
         output_text.delete(1.0, tk.END)
         image_preview_label.config(image="")
         image_previews = []
+    
+    def callback():
+        global after_id
+        var.set(var.get() + 1)
+        after_id = root.after(500, callback)
+
+    def quit():
+        """Cancel all scheduled callbacks and quit."""
+        root.after_cancel(after_id)
+        root.destroy()
 
     customtkinter.set_appearance_mode("dark")  
     customtkinter.set_default_color_theme("dark-blue")  
@@ -291,6 +301,8 @@ void loop()
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
     root.title("Image to arduino")
    
+    var = tk.IntVar()
+
     # Set window size
     root.geometry(f"{w}x{h}") # Set width and height as desired
     
@@ -298,7 +310,10 @@ void loop()
     root.resizable(False, False)  
     
     # Icon app
-    icon = tk.PhotoImage(file="icon/icon.png")
+    current_file = __file__
+    current_dir = os.path.dirname(current_file)
+    icon_file = os.path.join(current_dir, 'icon', 'icon.png')
+    icon = tk.PhotoImage(file=icon_file)
     root.iconphoto(False, icon, icon)
 
     # Label for displaying selected file path
@@ -349,5 +364,9 @@ void loop()
     clear_all_button = customtkinter.CTkButton(root, text="Clear All", command=clear_all)
     clear_all_button.grid(row=5, column=0, pady=5, padx=10, columnspan=1, sticky="nsew")  
 
+
+    callback()
+    root.protocol('WM_DELETE_WINDOW', quit)
+
     root.mainloop()
-main()
+
