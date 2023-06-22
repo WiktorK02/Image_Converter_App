@@ -55,11 +55,11 @@ $ git checkout BRANCH-NAME
 
 ## Task list
 * add more than one display size<br>
-* make icon of the app<br>
 * make app as .exe <br>
-* resize window (width)
 * optimize gif extension option (or remove it)
 * test software
+* <del>make icon of the app<br><del>
+* <del> resize window (width) <del>
 * <del> fix issue with generating dark png images with trancparency <del>
 * <del> reverse color of image </del><br>
 * <del> create function which generate full arduino code(not only arduino array) and connect it to switch button</del>
