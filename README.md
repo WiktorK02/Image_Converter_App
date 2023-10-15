@@ -3,7 +3,7 @@
 ## About Project
 Application has been created in order to easy convert images into your <strong>Arduino</strong> project with <strong>oled displays</strong>
 ### How does it work:
-While you open .png and .jpg (others extensions in the future) image in app, the algorithm convert it to hexdeicmal array. Then it             returns full     code, ready to copy and put into the Arduino IDE. You can also preview how image will you like on your dislplay
+As you launch the application and load an image in formats such as .png and .jpg (with potential support for additional extensions in the future), the algorithm transforms the image into a hexadecimal array. Subsequently, it generates the complete code, which is readily available for copying and pasting into the Arduino IDE. Furthermore, the application allows you to preview how the image will appear on your display.
 ## Demo
 ![1](https://github.com/WiktorK02/image-to-arduino/assets/123249470/13ef2888-5a98-4d0a-a8c5-c2dc26e7ea3c)
 ![3](https://github.com/WiktorK02/image-to-arduino/assets/123249470/1e1bb538-91c3-4565-840a-62a25afd3da4)
